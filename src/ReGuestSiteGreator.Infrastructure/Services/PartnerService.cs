@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using ReGuestSiteGreator.Application.Common;
 using ReGuestSiteGreator.Application.DTOs.Partner;
 using ReGuestSiteGreator.Application.Interfaces;
@@ -132,7 +133,23 @@ public class PartnerService : IPartnerService
         Template = block.Template,
         Style = block.Style,
         Script = block.Script,
-        Meta = block.Meta,
-        DefaultData = block.DefaultData
+        Meta = ParseJson(block.Meta),
+        DefaultData = ParseJson(block.DefaultData)
     };
+
+    private static JsonElement ParseJson(string? json)
+    {
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            try
+            {
+                var element = JsonSerializer.Deserialize<JsonElement>(json);
+                if (element.ValueKind == JsonValueKind.Object)
+                    return element;
+            }
+            catch (JsonException) { }
+        }
+
+        return JsonSerializer.Deserialize<JsonElement>("{}");
+    }
 }
