@@ -30,7 +30,7 @@ public class AuthService : IAuthService
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedAccessException("Invalid username or password.");
 
-        var token = GenerateJwtToken(user.Id, user.Email, user.Role.ToString());
+        var token = GenerateJwtToken(user.Id, user.Username, user.Email, user.Role.ToString());
         var expiresAt = DateTime.UtcNow.AddHours(GetTokenExpiryHours());
 
         return new LoginResponse
@@ -42,7 +42,7 @@ public class AuthService : IAuthService
         };
     }
 
-    private string GenerateJwtToken(Guid userId, string email, string role)
+    private string GenerateJwtToken(Guid userId, string username, string email, string role)
     {
         var jwtKey = _configuration["Jwt:Key"]
             ?? throw new InvalidOperationException("JWT key is not configured.");
@@ -57,6 +57,7 @@ public class AuthService : IAuthService
         var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+            new Claim(JwtRegisteredClaimNames.UniqueName, username),
             new Claim(JwtRegisteredClaimNames.Email, email),
             new Claim(ClaimTypes.Role, role),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
