@@ -27,6 +27,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(u => u.Id);
+            entity.HasIndex(u => u.Username).IsUnique();
+            entity.Property(u => u.Username).IsRequired().HasMaxLength(100);
             entity.HasIndex(u => u.Email).IsUnique();
             entity.Property(u => u.Email).IsRequired().HasMaxLength(256);
             entity.Property(u => u.PasswordHash).IsRequired();
@@ -150,6 +152,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>().HasData(new User
         {
             Id = new Guid("00000000-0000-0000-0000-000000000001"),
+            Username = "admin",
             Email = "admin@reguestsitecreator.com",
             PasswordHash = "$2a$11$2C9OxE9D5fdKyYoqDdG45.sGzq99vvqVjZ3Tey3cUCn0tKyZZppQC",
             Role = UserRole.Admin,
@@ -160,7 +163,8 @@ public class ApplicationDbContext : DbContext
         new User
         {
             Id = new Guid("00000000-0000-0000-0000-000000000002"),
-            Email = "admin",
+            Username = "admin2",
+            Email = "admin2@reguestsitecreator.com",
             PasswordHash = "$2a$11$VaYCYAUH0DMR3GwWU0D1HOazM8lv/z0XcE/r1ROlP9euDOhqYumvS",
             Role = UserRole.Admin,
             CreatedAt = now,
