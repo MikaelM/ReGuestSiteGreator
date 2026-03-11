@@ -1,8 +1,8 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using ReGuestSiteGreator.API.OpenApi;
 using ReGuestSiteGreator.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,46 +34,43 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi(options =>
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
 {
-    // Add JWT Bearer security scheme to the OpenAPI document
-    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    var bearerScheme = new OpenApiSecurityScheme
     {
-        document.Components ??= new OpenApiComponents();
-        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>(StringComparer.Ordinal);
-        document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
-        {
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT",
-            Description = "Enter your JWT token (without the 'Bearer ' prefix)"
-        };
-        return Task.CompletedTask;
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Enter your JWT token (without the 'Bearer ' prefix)"
+    };
+
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "ReGuestSiteGreator API",
+        Version = "v1"
     });
 
-    // Mark endpoints that require authorization with the security requirement
-    options.AddOperationTransformer((operation, context, cancellationToken) =>
+    options.AddSecurityDefinition("Bearer", bearerScheme);
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
-        if (context.Description.ActionDescriptor.EndpointMetadata.OfType<IAuthorizeData>().Any())
-        {
-            operation.Security ??= new List<OpenApiSecurityRequirement>();
-            operation.Security.Add(new OpenApiSecurityRequirement
-            {
-                [new OpenApiSecuritySchemeReference("Bearer")] = new List<string>()
-            });
-        }
-        return Task.CompletedTask;
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
     });
+
+    options.OperationFilter<SwaggerAuthorizeOperationFilter>();
 });
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/openapi/v1.json", "ReGuestSiteGreator API v1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "ReGuestSiteGreator API v1");
     });
 }
 

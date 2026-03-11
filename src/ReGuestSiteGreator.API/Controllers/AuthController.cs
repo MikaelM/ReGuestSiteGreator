@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReGuestSiteGreator.Application.DTOs.Auth;
 using ReGuestSiteGreator.Application.Interfaces;
@@ -18,6 +19,7 @@ public class AuthController : ControllerBase
     /// <summary>
     /// Authenticates a user (admin or partner) and returns a JWT token.
     /// </summary>
+    [AllowAnonymous]
     [HttpPost("login")]
     [ProducesResponseType(typeof(LoginResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
