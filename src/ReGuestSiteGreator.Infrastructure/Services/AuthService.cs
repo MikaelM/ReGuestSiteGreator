@@ -24,11 +24,11 @@ public class AuthService : IAuthService
     public async Task<LoginResponse> LoginAsync(LoginRequest request)
     {
         var user = await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == request.Email)
-            ?? throw new UnauthorizedAccessException("Invalid email or password.");
+            .FirstOrDefaultAsync(u => u.Username == request.Username)
+            ?? throw new UnauthorizedAccessException("Invalid username or password.");
 
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            throw new UnauthorizedAccessException("Invalid email or password.");
+            throw new UnauthorizedAccessException("Invalid username or password.");
 
         var token = GenerateJwtToken(user.Id, user.Email, user.Role.ToString());
         var expiresAt = DateTime.UtcNow.AddHours(GetTokenExpiryHours());

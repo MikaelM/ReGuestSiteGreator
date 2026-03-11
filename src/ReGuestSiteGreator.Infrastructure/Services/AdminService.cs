@@ -29,6 +29,9 @@ public class AdminService : IAdminService
 
     public async Task<PartnerResponse> CreatePartnerAsync(CreatePartnerRequest request)
     {
+        if (await _context.Users.AnyAsync(u => u.Username == request.Username))
+            throw new InvalidOperationException($"A user with username '{request.Username}' already exists.");
+
         if (await _context.Users.AnyAsync(u => u.Email == request.Email))
             throw new InvalidOperationException($"A user with email '{request.Email}' already exists.");
 
@@ -37,6 +40,7 @@ public class AdminService : IAdminService
         var user = new User
         {
             Id = Guid.NewGuid(),
+            Username = request.Username,
             Email = request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
             Role = UserRole.Partner,

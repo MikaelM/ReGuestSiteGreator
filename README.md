@@ -82,7 +82,7 @@ After running migrations, a seeded admin account is available:
 
 | Field | Value |
 |---|---|
-| Email | `admin@reguestsitecreator.com` |
+| Username | `admin` |
 | Password | `Admin@123` |
 
 ## API Endpoints
@@ -95,7 +95,7 @@ After running migrations, a seeded admin account is available:
 
 **Request body:**
 ```json
-{ "email": "admin@reguestsitecreator.com", "password": "Admin@123" }
+{ "username": "admin", "password": "Admin@123" }
 ```
 
 **Response:**
