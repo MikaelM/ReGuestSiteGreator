@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ReGuestSiteGreator.API/ReGuestSiteGreator.API.csproj" />
+    <Project Path="src/ReGuestSiteGreator.Application/ReGuestSiteGreator.Application.csproj" />
+    <Project Path="src/ReGuestSiteGreator.Domain/ReGuestSiteGreator.Domain.csproj" />
+    <Project Path="src/ReGuestSiteGreator.Infrastructure/ReGuestSiteGreator.Infrastructure.csproj" />
+  </Folder>
+</Solution>
