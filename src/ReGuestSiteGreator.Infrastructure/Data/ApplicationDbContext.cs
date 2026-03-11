@@ -163,7 +163,6 @@ public class ApplicationDbContext : DbContext
             CreatedAt = now,
             UpdatedAt = now
         },
-        // BCrypt hash for "s3cUrePassw0rdF0rAdmin123$"
         new User
         {
             Id = new Guid("00000000-0000-0000-0000-000000000002"),

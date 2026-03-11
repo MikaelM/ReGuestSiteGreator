@@ -39,14 +39,17 @@ builder.Services.AddOpenApi(options =>
     // Add JWT Bearer security scheme to the OpenAPI document
     options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
-        var components = (document.Components ??= new OpenApiComponents());
-        components.SecuritySchemes!.Add("Bearer", new OpenApiSecurityScheme
+        document.Components ??= new OpenApiComponents();
+        if (document.Components.SecuritySchemes is not null)
         {
-            Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT",
-            Description = "Enter your JWT token (without the 'Bearer ' prefix)"
-        });
+            document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Description = "Enter your JWT token (without the 'Bearer ' prefix)"
+            };
+        }
         return Task.CompletedTask;
     });
 
@@ -55,13 +58,11 @@ builder.Services.AddOpenApi(options =>
     {
         if (context.Description.ActionDescriptor.EndpointMetadata.OfType<IAuthorizeData>().Any())
         {
-            operation.Security =
-            [
-                new OpenApiSecurityRequirement
-                {
-                    [new OpenApiSecuritySchemeReference("Bearer")] = []
-                }
-            ];
+            operation.Security ??= new List<OpenApiSecurityRequirement>();
+            operation.Security.Add(new OpenApiSecurityRequirement
+            {
+                [new OpenApiSecuritySchemeReference("Bearer")] = new List<string>()
+            });
         }
         return Task.CompletedTask;
     });
