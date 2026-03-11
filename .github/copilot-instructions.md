@@ -125,9 +125,38 @@ docker compose up
 - Implementations go in `ReGuestSiteGreator.Infrastructure/Services/`.
 - New API endpoints go in an appropriate controller in `ReGuestSiteGreator.API/Controllers/`.
 - Use `async`/`await` throughout. All service methods should return `Task<T>`.
-- Use `Guid` for all entity primary keys.
+- **Use `Guid` for all entity primary keys. Always use `Guid.NewGuid()` when creating new entities.** Never use sequential or predictable GUIDs in production code.
 - EF Core fluent configuration is preferred over data annotations.
 - Generate a new EF Core migration after any entity/schema change:
   ```bash
   dotnet ef migrations add <MigrationName> --project src/ReGuestSiteGreator.Infrastructure --startup-project src/ReGuestSiteGreator.API
   ```
+
+---
+
+## GUID / UUID Guidelines
+
+**IMPORTANT:** All entity IDs must use proper random UUIDs/GUIDs.
+
+- ✅ **DO**: Use `Id = Guid.NewGuid()` when creating entities in services
+- ❌ **DON'T**: Use sequential or predictable GUIDs like `00000000-0000-0000-0000-000000000001`
+- **Exception**: Seed data in migrations may use hardcoded GUIDs for consistency, but these are ONLY for initial test data
+
+**Example (Correct):**
+```csharp
+var user = new User
+{
+    Id = Guid.NewGuid(),  // ✅ Proper random UUID
+    Email = request.Email,
+    // ...
+};
+```
+
+**Example (Incorrect - DO NOT DO THIS):**
+```csharp
+var user = new User
+{
+    Id = new Guid("00000000-0000-0000-0000-000000000001"),  // ❌ Predictable GUID
+    // ...
+};
+```

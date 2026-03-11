@@ -121,6 +121,10 @@ public class ApplicationDbContext : DbContext
     {
         var now = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
+        // NOTE: These are hardcoded GUIDs for seed data consistency across migrations.
+        // Real entities created via API will use Guid.NewGuid() for proper random UUIDs.
+        // Do NOT use sequential or predictable GUIDs for production data!
+
         modelBuilder.Entity<Plan>().HasData(
             new Plan
             {
