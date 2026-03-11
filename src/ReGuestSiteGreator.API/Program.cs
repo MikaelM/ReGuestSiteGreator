@@ -40,16 +40,14 @@ builder.Services.AddOpenApi(options =>
     options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
         document.Components ??= new OpenApiComponents();
-        if (document.Components.SecuritySchemes is not null)
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>(StringComparer.Ordinal);
+        document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
         {
-            document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
-            {
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                Description = "Enter your JWT token (without the 'Bearer ' prefix)"
-            };
-        }
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            Description = "Enter your JWT token (without the 'Bearer ' prefix)"
+        };
         return Task.CompletedTask;
     });
 
