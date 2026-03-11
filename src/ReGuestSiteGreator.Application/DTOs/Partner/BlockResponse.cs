@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace ReGuestSiteGreator.Application.DTOs.Partner;
 
 public class BlockResponse
@@ -7,6 +9,6 @@ public class BlockResponse
     public string Template { get; set; } = string.Empty;
     public string Style { get; set; } = string.Empty;
     public string Script { get; set; } = string.Empty;
-    public string Meta { get; set; } = "{}";
-    public string DefaultData { get; set; } = "{}";
+    public JsonElement Meta { get; set; } = JsonSerializer.Deserialize<JsonElement>("{}");
+    public JsonElement DefaultData { get; set; } = JsonSerializer.Deserialize<JsonElement>("{}");
 }

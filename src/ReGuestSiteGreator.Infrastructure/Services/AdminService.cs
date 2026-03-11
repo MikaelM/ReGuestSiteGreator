@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ReGuestSiteGreator.Application.Common;
 using ReGuestSiteGreator.Application.DTOs.Admin;
 using ReGuestSiteGreator.Application.Interfaces;
 using ReGuestSiteGreator.Domain.Entities;
@@ -16,15 +17,27 @@ public class AdminService : IAdminService
         _context = context;
     }
 
-    public async Task<IEnumerable<PartnerResponse>> GetPartnersAsync()
+    public async Task<PagedResult<PartnerResponse>> GetPartnersAsync(int page, int pageSize)
     {
-        var partners = await _context.Partners
+        var query = _context.Partners
             .Include(p => p.User)
             .Include(p => p.Plan)
-            .OrderBy(p => p.CreatedAt)
+            .OrderBy(p => p.CreatedAt);
+
+        var totalCount = await query.CountAsync();
+
+        var partners = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return partners.Select(MapToResponse);
+        return new PagedResult<PartnerResponse>
+        {
+            Items = partners.Select(MapToResponse),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     public async Task<PartnerResponse> CreatePartnerAsync(CreatePartnerRequest request)
@@ -66,20 +79,31 @@ public class AdminService : IAdminService
         return MapToResponse(partner);
     }
 
-    public async Task<IEnumerable<PlanResponse>> GetPlansAsync()
+    public async Task<PagedResult<PlanResponse>> GetPlansAsync(int page, int pageSize)
     {
-        var plans = await _context.Plans
-            .OrderBy(p => p.Type)
+        var query = _context.Plans.OrderBy(p => p.Type);
+
+        var totalCount = await query.CountAsync();
+
+        var plans = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
-        return plans.Select(p => new PlanResponse
+        return new PagedResult<PlanResponse>
         {
-            Id = p.Id,
-            Name = p.Name,
-            Type = p.Type,
-            Description = p.Description,
-            CreatedAt = p.CreatedAt
-        });
+            Items = plans.Select(p => new PlanResponse
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Type = p.Type,
+                Description = p.Description,
+                CreatedAt = p.CreatedAt
+            }),
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     public async Task<PartnerResponse> AssignPlanToPartnerAsync(Guid partnerId, AssignPlanRequest request)

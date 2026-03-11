@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ReGuestSiteGreator.Application.Common;
 using ReGuestSiteGreator.Application.DTOs.Admin;
 using ReGuestSiteGreator.Application.Interfaces;
 
@@ -10,6 +11,7 @@ namespace ReGuestSiteGreator.API.Controllers;
 [Authorize(Roles = "Admin")]
 public class AdminController : ControllerBase
 {
+    private const int MaxPageSize = 100;
     private readonly IAdminService _adminService;
 
     public AdminController(IAdminService adminService)
@@ -18,13 +20,18 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
-    /// Returns a list of all partners.
+    /// Returns a paginated list of all partners.
     /// </summary>
     [HttpGet("partners")]
-    [ProducesResponseType(typeof(IEnumerable<PartnerResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPartners()
+    [ProducesResponseType(typeof(PagedResult<PartnerResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPartners(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20)
     {
-        var partners = await _adminService.GetPartnersAsync();
+        if (page < 1) page = 1;
+        if (pageSize < 1 || pageSize > MaxPageSize) pageSize = 20;
+
+        var partners = await _adminService.GetPartnersAsync(page, pageSize);
         return Ok(partners);
     }
 
@@ -48,13 +55,18 @@ public class AdminController : ControllerBase
     }
 
     /// <summary>
-    /// Returns a list of all available plans.
+    /// Returns a paginated list of all available plans.
     /// </summary>
     [HttpGet("plans")]
-    [ProducesResponseType(typeof(IEnumerable<PlanResponse>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetPlans()
+    [ProducesResponseType(typeof(PagedResult<PlanResponse>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetPlans(
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 20)
     {
-        var plans = await _adminService.GetPlansAsync();
+        if (page < 1) page = 1;
+        if (pageSize < 1 || pageSize > MaxPageSize) pageSize = 20;
+
+        var plans = await _adminService.GetPlansAsync(page, pageSize);
         return Ok(plans);
     }
 
