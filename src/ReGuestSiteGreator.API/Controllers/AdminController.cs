@@ -29,7 +29,8 @@ public class AdminController : ControllerBase
         [FromQuery] int pageSize = 20)
     {
         if (page < 1) page = 1;
-        if (pageSize < 1 || pageSize > MaxPageSize) pageSize = 20;
+        if (pageSize < 1) pageSize = 1;
+        if (pageSize > MaxPageSize) pageSize = MaxPageSize;
 
         var partners = await _adminService.GetPartnersAsync(page, pageSize);
         return Ok(partners);
@@ -64,7 +65,8 @@ public class AdminController : ControllerBase
         [FromQuery] int pageSize = 20)
     {
         if (page < 1) page = 1;
-        if (pageSize < 1 || pageSize > MaxPageSize) pageSize = 20;
+        if (pageSize < 1) pageSize = 1;
+        if (pageSize > MaxPageSize) pageSize = MaxPageSize;
 
         var plans = await _adminService.GetPlansAsync(page, pageSize);
         return Ok(plans);

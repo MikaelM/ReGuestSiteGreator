@@ -27,7 +27,7 @@ public class AdminService : IAdminService
         var totalCount = await query.CountAsync();
 
         var partners = await query
-            .Skip((page - 1) * pageSize)
+            .Skip((int)Math.Min((long)(page - 1) * pageSize, int.MaxValue))
             .Take(pageSize)
             .ToListAsync();
 
@@ -86,7 +86,7 @@ public class AdminService : IAdminService
         var totalCount = await query.CountAsync();
 
         var plans = await query
-            .Skip((page - 1) * pageSize)
+            .Skip((int)Math.Min((long)(page - 1) * pageSize, int.MaxValue))
             .Take(pageSize)
             .ToListAsync();
 

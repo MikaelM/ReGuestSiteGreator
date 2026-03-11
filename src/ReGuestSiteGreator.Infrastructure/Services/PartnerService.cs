@@ -139,12 +139,16 @@ public class PartnerService : IPartnerService
 
     private static JsonElement ParseJson(string? json)
     {
-        try
+        if (!string.IsNullOrWhiteSpace(json))
         {
-            if (!string.IsNullOrWhiteSpace(json))
-                return JsonSerializer.Deserialize<JsonElement>(json);
+            try
+            {
+                var element = JsonSerializer.Deserialize<JsonElement>(json);
+                if (element.ValueKind == JsonValueKind.Object)
+                    return element;
+            }
+            catch (JsonException) { }
         }
-        catch (JsonException) { }
 
         return JsonSerializer.Deserialize<JsonElement>("{}");
     }
