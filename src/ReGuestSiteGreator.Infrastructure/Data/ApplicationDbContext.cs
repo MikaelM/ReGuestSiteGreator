@@ -146,16 +146,91 @@ public class ApplicationDbContext : DbContext
             }
         );
 
-        var adminId = new Guid("00000000-0000-0000-0000-000000000001");
         // BCrypt hash for "Admin@123"
         modelBuilder.Entity<User>().HasData(new User
         {
-            Id = adminId,
+            Id = new Guid("00000000-0000-0000-0000-000000000001"),
             Email = "admin@reguestsitecreator.com",
             PasswordHash = "$2a$11$2C9OxE9D5fdKyYoqDdG45.sGzq99vvqVjZ3Tey3cUCn0tKyZZppQC",
             Role = UserRole.Admin,
             CreatedAt = now,
             UpdatedAt = now
+        },
+        // BCrypt hash for "s3cUrePassw0rdF0rAdmin123$"
+        new User
+        {
+            Id = new Guid("00000000-0000-0000-0000-000000000002"),
+            Email = "admin",
+            PasswordHash = "$2a$11$VaYCYAUH0DMR3GwWU0D1HOazM8lv/z0XcE/r1ROlP9euDOhqYumvS",
+            Role = UserRole.Admin,
+            CreatedAt = now,
+            UpdatedAt = now
         });
+
+        // Blocks
+        var headerId  = new Guid("20000000-0000-0000-0000-000000000001");
+        var footerId  = new Guid("20000000-0000-0000-0000-000000000002");
+        var block1Id  = new Guid("20000000-0000-0000-0000-000000000003");
+        var block2Id  = new Guid("20000000-0000-0000-0000-000000000004");
+        var block3Id  = new Guid("20000000-0000-0000-0000-000000000005");
+        var block4Id  = new Guid("20000000-0000-0000-0000-000000000006");
+
+        modelBuilder.Entity<Block>().HasData(
+            new Block { Id = headerId, Name = "Header",       Template = "<p>Header</p>",       Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = footerId, Name = "Block Footer", Template = "<p>Block Footer</p>", Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = block1Id, Name = "Block 1",      Template = "<p>Block 1</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = block2Id, Name = "Block 2",      Template = "<p>Block 2</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = block3Id, Name = "Block 3",      Template = "<p>Block 3</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = block4Id, Name = "Block 4",      Template = "<p>Block 4</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now }
+        );
+
+        // Sitemaps
+        var basicSitemapId   = new Guid("30000000-0000-0000-0000-000000000001");
+        var premiumSitemapId = new Guid("30000000-0000-0000-0000-000000000002");
+
+        modelBuilder.Entity<Sitemap>().HasData(
+            new Sitemap { Id = basicSitemapId,   Name = "Basic Sitemap",   Description = "", PlanId = new Guid("10000000-0000-0000-0000-000000000001"), CreatedAt = now, UpdatedAt = now },
+            new Sitemap { Id = premiumSitemapId, Name = "Premium Sitemap", Description = "", PlanId = new Guid("10000000-0000-0000-0000-000000000003"), CreatedAt = now, UpdatedAt = now }
+        );
+
+        // Pages
+        var basicHomeId          = new Guid("40000000-0000-0000-0000-000000000001");
+        var basicContactId       = new Guid("40000000-0000-0000-0000-000000000002");
+        var premiumHomeId        = new Guid("40000000-0000-0000-0000-000000000003");
+        var premiumContactId     = new Guid("40000000-0000-0000-0000-000000000004");
+        var premiumFaqId         = new Guid("40000000-0000-0000-0000-000000000005");
+
+        modelBuilder.Entity<Page>().HasData(
+            new Page { Id = basicHomeId,      SitemapId = basicSitemapId,   Name = "Home",       Slug = "home",       Title = "Home",       Description = "", Content = "", MetaTitle = "", MetaDescription = "", MetaKeywords = "", Status = PageStatus.Draft, SortOrder = 1, IsHomePage = true,  CreatedAt = now, UpdatedAt = now },
+            new Page { Id = basicContactId,   SitemapId = basicSitemapId,   Name = "Contact Us", Slug = "contact-us", Title = "Contact Us", Description = "", Content = "", MetaTitle = "", MetaDescription = "", MetaKeywords = "", Status = PageStatus.Draft, SortOrder = 2, IsHomePage = false, CreatedAt = now, UpdatedAt = now },
+            new Page { Id = premiumHomeId,    SitemapId = premiumSitemapId, Name = "Home",       Slug = "home",       Title = "Home",       Description = "", Content = "", MetaTitle = "", MetaDescription = "", MetaKeywords = "", Status = PageStatus.Draft, SortOrder = 1, IsHomePage = true,  CreatedAt = now, UpdatedAt = now },
+            new Page { Id = premiumContactId, SitemapId = premiumSitemapId, Name = "Contact Us", Slug = "contact-us", Title = "Contact Us", Description = "", Content = "", MetaTitle = "", MetaDescription = "", MetaKeywords = "", Status = PageStatus.Draft, SortOrder = 2, IsHomePage = false, CreatedAt = now, UpdatedAt = now },
+            new Page { Id = premiumFaqId,     SitemapId = premiumSitemapId, Name = "FAQ",        Slug = "faq",        Title = "FAQ",        Description = "", Content = "", MetaTitle = "", MetaDescription = "", MetaKeywords = "", Status = PageStatus.Draft, SortOrder = 3, IsHomePage = false, CreatedAt = now, UpdatedAt = now }
+        );
+
+        // PageBlocks
+        modelBuilder.Entity<PageBlock>().HasData(
+            // Basic Home: [Header, Block 1, Footer]
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000001"), PageId = basicHomeId,      BlockId = headerId,  SortOrder = 1 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000002"), PageId = basicHomeId,      BlockId = block1Id,  SortOrder = 2 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000003"), PageId = basicHomeId,      BlockId = footerId,  SortOrder = 3 },
+            // Basic Contact Us: [Header, Block 2, Footer]
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000004"), PageId = basicContactId,   BlockId = headerId,  SortOrder = 1 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000005"), PageId = basicContactId,   BlockId = block2Id,  SortOrder = 2 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000006"), PageId = basicContactId,   BlockId = footerId,  SortOrder = 3 },
+            // Premium Home: [Header, Block 1, Block 3, Footer]
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000007"), PageId = premiumHomeId,    BlockId = headerId,  SortOrder = 1 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000008"), PageId = premiumHomeId,    BlockId = block1Id,  SortOrder = 2 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000009"), PageId = premiumHomeId,    BlockId = block3Id,  SortOrder = 3 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000010"), PageId = premiumHomeId,    BlockId = footerId,  SortOrder = 4 },
+            // Premium Contact Us: [Header, Block 2, Footer]
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000011"), PageId = premiumContactId, BlockId = headerId,  SortOrder = 1 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000012"), PageId = premiumContactId, BlockId = block2Id,  SortOrder = 2 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000013"), PageId = premiumContactId, BlockId = footerId,  SortOrder = 3 },
+            // Premium FAQ: [Header, Block 4, Footer]
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000014"), PageId = premiumFaqId,     BlockId = headerId,  SortOrder = 1 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000015"), PageId = premiumFaqId,     BlockId = block4Id,  SortOrder = 2 },
+            new PageBlock { Id = new Guid("50000000-0000-0000-0000-000000000016"), PageId = premiumFaqId,     BlockId = footerId,  SortOrder = 3 }
+        );
     }
 }
