@@ -20,5 +20,5 @@ public class PageDetailResponse
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public DateTime? PublishedAt { get; set; }
-    public IEnumerable<BlockResponse> Blocks { get; set; } = [];
+    public IEnumerable<BlockSummaryResponse> Blocks { get; set; } = [];
 }

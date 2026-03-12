@@ -64,7 +64,7 @@ public class PartnerService : IPartnerService
             CreatedAt = page.CreatedAt,
             UpdatedAt = page.UpdatedAt,
             PublishedAt = page.PublishedAt,
-            Blocks = page.PageBlocks.Select(pb => MapToBlockResponse(pb.Block))
+            Blocks = page.PageBlocks.Select(pb => new BlockSummaryResponse { Id = pb.Block.Id, Name = pb.Block.Name })
         };
     }
 
