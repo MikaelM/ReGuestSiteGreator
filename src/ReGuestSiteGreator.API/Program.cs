@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(options =>
 
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "ReGuestSiteGreator API",
+        Title = "ReGuestSiteCreator API",
         Version = "v1"
     });
 
@@ -70,7 +70,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint("/swagger/v1/swagger.json", "ReGuestSiteGreator API v1");
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "ReGuestSiteCreator API v1");
     });
 }
 
