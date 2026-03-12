@@ -130,6 +130,7 @@ public class PartnerService : IPartnerService
     {
         Id = block.Id,
         Name = block.Name,
+        Title = block.Title,
         Template = block.Template,
         Style = block.Style,
         Script = block.Script,

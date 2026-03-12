@@ -65,6 +65,7 @@ public class ApplicationDbContext : DbContext
         {
             entity.HasKey(b => b.Id);
             entity.Property(b => b.Name).IsRequired().HasMaxLength(200);
+            entity.Property(b => b.Title).HasMaxLength(300);
             entity.Property(b => b.Template).IsRequired();
             entity.Property(b => b.Meta).HasColumnType("jsonb");
             entity.Property(b => b.DefaultData).HasColumnType("jsonb");
@@ -183,12 +184,12 @@ public class ApplicationDbContext : DbContext
         var block4Id  = new Guid("20000000-0000-0000-0000-000000000006");
 
         modelBuilder.Entity<Block>().HasData(
-            new Block { Id = headerId, Name = "Header",       Template = "<p>Header</p>",       Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
-            new Block { Id = footerId, Name = "Block Footer", Template = "<p>Block Footer</p>", Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
-            new Block { Id = block1Id, Name = "Block 1",      Template = "<p>Block 1</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
-            new Block { Id = block2Id, Name = "Block 2",      Template = "<p>Block 2</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
-            new Block { Id = block3Id, Name = "Block 3",      Template = "<p>Block 3</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
-            new Block { Id = block4Id, Name = "Block 4",      Template = "<p>Block 4</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now }
+            new Block { Id = headerId, Name = "Header",       Title = "Header",       Template = "<p>Header</p>",       Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = footerId, Name = "Block Footer", Title = "Block Footer", Template = "<p>Block Footer</p>", Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = block1Id, Name = "Block 1",      Title = "Block 1",      Template = "<p>Block 1</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = block2Id, Name = "Block 2",      Title = "Block 2",      Template = "<p>Block 2</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = block3Id, Name = "Block 3",      Title = "Block 3",      Template = "<p>Block 3</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now },
+            new Block { Id = block4Id, Name = "Block 4",      Title = "Block 4",      Template = "<p>Block 4</p>",      Style = "", Script = "", Meta = "{}", DefaultData = "{}", CreatedAt = now, UpdatedAt = now }
         );
 
         // Sitemaps
