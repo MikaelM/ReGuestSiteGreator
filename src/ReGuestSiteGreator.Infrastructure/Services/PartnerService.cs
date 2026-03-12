@@ -39,33 +39,35 @@ public class PartnerService : IPartnerService
     {
         var partner = await GetPartnerWithPlanAsync(userId);
 
-        var page = await _context.Pages
-            .Include(p => p.PageBlocks.OrderBy(pb => pb.SortOrder))
-                .ThenInclude(pb => pb.Block)
-            .Include(p => p.Sitemap)
-            .FirstOrDefaultAsync(p => p.Id == pageId && p.Sitemap.PlanId == partner.PlanId)
+        var response = await _context.Pages
+            .Where(p => p.Id == pageId && p.Sitemap.PlanId == partner.PlanId)
+            .Select(p => new PageDetailResponse
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Slug = p.Slug,
+                Title = p.Title,
+                Description = p.Description,
+                Content = p.Content,
+                MetaTitle = p.MetaTitle,
+                MetaDescription = p.MetaDescription,
+                MetaKeywords = p.MetaKeywords,
+                Status = p.Status,
+                SortOrder = p.SortOrder,
+                IsHomePage = p.IsHomePage,
+                ParentSlug = p.ParentSlug,
+                CreatedAt = p.CreatedAt,
+                UpdatedAt = p.UpdatedAt,
+                PublishedAt = p.PublishedAt,
+                Blocks = p.PageBlocks
+                    .OrderBy(pb => pb.SortOrder)
+                    .Select(pb => new BlockSummaryResponse { Id = pb.Block.Id, Name = pb.Block.Name })
+                    .ToList()
+            })
+            .FirstOrDefaultAsync()
             ?? throw new KeyNotFoundException($"Page with ID '{pageId}' was not found in your sitemap.");
 
-        return new PageDetailResponse
-        {
-            Id = page.Id,
-            Name = page.Name,
-            Slug = page.Slug,
-            Title = page.Title,
-            Description = page.Description,
-            Content = page.Content,
-            MetaTitle = page.MetaTitle,
-            MetaDescription = page.MetaDescription,
-            MetaKeywords = page.MetaKeywords,
-            Status = page.Status,
-            SortOrder = page.SortOrder,
-            IsHomePage = page.IsHomePage,
-            ParentSlug = page.ParentSlug,
-            CreatedAt = page.CreatedAt,
-            UpdatedAt = page.UpdatedAt,
-            PublishedAt = page.PublishedAt,
-            Blocks = page.PageBlocks.Select(pb => new BlockSummaryResponse { Id = pb.Block.Id, Name = pb.Block.Name })
-        };
+        return response;
     }
 
     public async Task<PagedResult<BlockResponse>> GetBlocksAsync(Guid userId, int page, int pageSize)
